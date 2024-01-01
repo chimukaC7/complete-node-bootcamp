@@ -33,8 +33,9 @@ router
 
 router.route('/distances/:latlng/unit/:unit').get(tourController.getDistances);
 
+//chainging the HTTP verbs
 router
-  .route('/')
+  .route('/')//works for get and post
   .get(tourController.getAllTours)
   .post(
     authController.protect,

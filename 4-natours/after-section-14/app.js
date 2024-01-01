@@ -28,6 +28,15 @@ app.enable('trust proxy');
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+
+//MIDDLEWARE STACK
+//-thing of it like a pipeline
+//order as definded in the code
+//parsing the body
+//logging
+//setting headers
+//router
+
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
 app.use(cors());
