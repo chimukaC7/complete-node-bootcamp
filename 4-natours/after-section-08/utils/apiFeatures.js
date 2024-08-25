@@ -22,7 +22,7 @@ class APIFeatures {
 
         this.query = this.query.find(JSON.parse(queryStr));
 
-        return this;
+        return this;//returns the entire object
     }
 
     sort() {

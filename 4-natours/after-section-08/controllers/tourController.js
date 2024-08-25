@@ -19,7 +19,7 @@ exports.getAllTours = async (req, res) => {
             .sort()
             .limitFields()
             .paginate();
-            
+
         const tours = await features.query;
 
         // SEND RESPONSE
@@ -30,20 +30,21 @@ exports.getAllTours = async (req, res) => {
                 tours
             }
         });
+
     } catch (err) {
 
         res.status(404).json({
             status: 'fail',
             message: err
         });
-        
+
     }
 };
 
 exports.getTour = async (req, res) => {
     //we use async await because this tour.create returns a promise that we're awaiting so that we can then store the newly created tour document
     //inside of this variable and then send it along with the responseto the client down here.
-    
+
     //So we have a try catch here because we're actually using an async await function here.
     try {
         const tour = await Tour.findById(req.params.id);
@@ -74,7 +75,9 @@ exports.createTour = async (req, res) => {
 
         res.status(201).json({
             status: 'success',
-            data: {newTour}
+            data: {
+                newTour
+            }
         });
 
     } catch (err) {
@@ -115,6 +118,7 @@ exports.updateTour = async (req, res) => {
 };
 
 exports.deleteTour = async (req, res) => {
+
     try {
         await Tour.findByIdAndDelete(req.params.id);
 
@@ -131,43 +135,27 @@ exports.deleteTour = async (req, res) => {
 };
 
 exports.getTourStats = async (req, res) => {
+
     try {
         const stats = await Tour.aggregate([{
-                $match: {
-                    ratingsAverage: {
-                        $gte: 4.5
-                    }
+
+                //match is basically to select or to filter certain documents.
+                //so let's say that for starters, we only want to select documents which have a ratings average greater or equal than 4.5.
+                $match: { ratingsAverage: { $gte: 4.5 } }
+            },
+            {
+                $group: { 
+                    _id: { $toUpper: '$difficulty'},
+                    numTours: { $sum: 1 },
+                    numRatings: { $sum: '$ratingsQuantity'},
+                    avgRating: { $avg: '$ratingsAverage'},
+                    avgPrice: { $avg: '$price'},
+                    minPrice: { $min: '$price'},
+                    maxPrice: { $max: '$price'}
                 }
             },
             {
-                $group: {
-                    _id: {
-                        $toUpper: '$difficulty'
-                    },
-                    numTours: {
-                        $sum: 1
-                    },
-                    numRatings: {
-                        $sum: '$ratingsQuantity'
-                    },
-                    avgRating: {
-                        $avg: '$ratingsAverage'
-                    },
-                    avgPrice: {
-                        $avg: '$price'
-                    },
-                    minPrice: {
-                        $min: '$price'
-                    },
-                    maxPrice: {
-                        $max: '$price'
-                    }
-                }
-            },
-            {
-                $sort: {
-                    avgPrice: 1
-                }
+                $sort: { avgPrice: 1 }
             }
             // {
             //   $match: { _id: { $ne: 'EASY' } }
@@ -180,6 +168,7 @@ exports.getTourStats = async (req, res) => {
                 stats
             }
         });
+
     } catch (err) {
         res.status(404).json({
             status: 'fail',
