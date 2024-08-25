@@ -67,13 +67,14 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A tour must have a cover image']
     },
-    images: [String],
+    images: [String],    //Because we have multiple images, and I want to save those images as an array. And actually, as an array of strings.
     createdAt: {
       type: Date,
       default: Date.now(),
-      select: false
+      select: false //excluding a field from being exposed to the client
     },
-    startDates: [Date],
+    //so different dates for the same tour are simply different, let's say,instances of the tour starting on different dates.
+    startDates: [Date],//these startDates are basically different dates at which a tour starts.
     secretTour: {
       type: Boolean,
       default: false

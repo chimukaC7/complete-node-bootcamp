@@ -1,5 +1,7 @@
 npm init
 
+npm i mongoose
+
 npm i express
 npm i morgan
 npm i nodemon --global
