@@ -126,6 +126,7 @@ exports.deleteTour = async (req, res) => {
             status: 'success',
             data: null //So in a RESTful API, it is a common practice not to send back any data to the client when there was a delete operation, 
         });
+        
     } catch (err) {
         res.status(404).json({
             status: 'fail',
@@ -186,39 +187,24 @@ exports.getMonthlyPlan = async (req, res) => {
             },
             {
                 $match: {
-                    startDates: {
-                        $gte: new Date(`${year}-01-01`),
-                        $lte: new Date(`${year}-12-31`)
-                    }
+                    startDates: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }
                 }
             },
             {
                 $group: {
-                    _id: {
-                        $month: '$startDates'
-                    },
-                    numTourStarts: {
-                        $sum: 1
-                    },
-                    tours: {
-                        $push: '$name'
-                    }
+                    _id: { $month: '$startDates'  },
+                    numTourStarts: { $sum: 1 },
+                    tours: { $push: '$name'  }
                 }
             },
             {
-                $addFields: {
-                    month: '$_id'
-                }
+                $addFields: { month: '$_id' }
             },
             {
-                $project: {
-                    _id: 0
-                }
+                $project: {_id: 0 }
             },
             {
-                $sort: {
-                    numTourStarts: -1
-                }
+                $sort: {  numTourStarts: -1 }
             },
             {
                 $limit: 12
@@ -231,10 +217,12 @@ exports.getMonthlyPlan = async (req, res) => {
                 plan
             }
         });
+
     } catch (err) {
         res.status(404).json({
             status: 'fail',
             message: err
         });
     }
+
 };
